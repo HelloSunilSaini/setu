@@ -51,7 +51,7 @@ func main() {
 
 // Create Group Post (groupName, description, []users)
 
-// Add User to Group (groupID, UserID)
+// - Add User to Group (groupID, UserID)
 
 // Get Group, Get Groups
 
@@ -115,7 +115,7 @@ func main() {
 // 	]
 // }
 
-// // Group Get (UserID, GroupID)
+// // Group Dashboard Get (UserID, GroupID)
 // {
 // 	GroupDetails: name, Description,Id
 // 	GroupBalances: [
@@ -137,7 +137,7 @@ func main() {
 // 	]
 // }
 
-// // Delete Transaction Delete
+// // Delete Transaction
 
 // //
 

@@ -11,6 +11,7 @@ type Transaction struct {
 	ID                string  `json:"id,omitempty"`
 	GroupID           string  `json:"groupID,omitempty"`     // optional
 	CreatedByID       string  `json:"createdByID,omitempty"` // user_id
+	UpdatedByID       string  `json:"updatedBy,omitempty"`
 	CreatedOn         int64   `json:"createdOn,omitempty"`
 	UpdatedOn         int64   `json:"updatedOn,omitempty"`
 	TransactionAmount float64 `json:"transactionAmount,omitempty"`
@@ -38,7 +39,17 @@ func CreateTransaction(userId, groupId string, amount float64, remark string) (*
 		Remark:            remark,
 	}
 	TransactionMap[transaction.ID] = transaction
+	TransactionSplitMap[transaction.ID] = map[string]Split{}
 	return &transaction, nil
+}
+
+func (t *Transaction) UpdateTransaction(userId string, amount float64, remark string) {
+	t.UpdatedByID = userId
+	t.TransactionAmount = amount
+	t.Remark = remark
+	t.UpdatedOn = utils.GetUTCTime()
+	TransactionMap[t.ID] = *t
+	TransactionSplitMap[t.ID] = map[string]Split{}
 }
 
 func (s *Split) AddOrUpdateTransactionSplit() {
@@ -56,4 +67,6 @@ func GetTransactionByID(transactionId string) (*Transaction, error) {
 	return &transaction, nil
 }
 
-// func
+func GetTransactionSplits(transactionId string) map[string]Split {
+	return TransactionSplitMap[transactionId]
+}

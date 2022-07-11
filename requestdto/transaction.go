@@ -7,6 +7,7 @@ type TransactionSplitDetails struct {
 }
 
 type TransactionRequest struct {
+	ID           string                    `json:"id,omitempty"`
 	Amount       float64                   `json:"amount,omitempty"`
 	Comment      string                    `json:"comment,omitempty"`
 	SplitDetails []TransactionSplitDetails `json:"splitDetails,omitempty"`
