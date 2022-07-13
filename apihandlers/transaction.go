@@ -97,23 +97,50 @@ func (u *TransactionHandler) Put(r *http.Request) handler.ServiceResponse {
 
 // Get method for UserHandler
 func (u *TransactionHandler) Get(r *http.Request) handler.ServiceResponse {
-
 	user := r.Context().Value(constants.USER_CONTEXT_KEY).(dao.User)
 	vars := mux.Vars(r)
-	groupId, ok := vars["groupId"]
+	transactionId, ok := vars["transactionId"]
 	if !ok {
-		groups := dao.GetUserGroups(user.ID)
-		return handler.Response200OK(groups)
+		// params pagenumber pagesize
+		groupId, ok := vars["groupId"]
+		if !ok {
+			// get user non-group transaction
+			transactions := dao.GetNonGroupTransactions(user.ID)
+			return handler.Response200OK(transactions)
+		}
+		_, err := dao.GetGroupById(groupId)
+		if err != nil {
+			return handler.SimpleBadRequest("Invalid Group")
+		}
+		if !dao.IsGroupUser(groupId, user.ID) {
+			return handler.SimpleBadRequest("User is not member of group")
+		}
+		transactions := dao.GetGroupTransactions(groupId)
+		return handler.Response200OK(transactions)
 	}
-	group, err := dao.GetGroupById(groupId)
+	transaction, err := dao.GetTransactionByID(transactionId)
 	if err != nil {
 		return handler.SimpleBadRequest(err.Error())
 	}
-	groupUsers := dao.GetGroupUsers(groupId)
-	users := responsedto.ConvertDaoUsersToConnectionsResponse(groupUsers)
-	resp := responsedto.SingleGroupResponse{
-		GroupDetails: *group,
-		Members:      users,
+	splits := dao.GetTransactionSplits(transactionId)
+
+	return handler.Response200OK(responsedto.ConvertDaoTransactionsToResponse(transaction, splits))
+}
+
+func (u *TransactionHandler) Delete(r *http.Request) handler.ServiceResponse {
+	user := r.Context().Value(constants.USER_CONTEXT_KEY).(dao.User)
+	vars := mux.Vars(r)
+	transactionId, ok := vars["transactionId"]
+	if !ok {
+		return handler.SimpleBadRequest("transactionId not given")
 	}
-	return handler.Response200OK(resp)
+	transaction, err := dao.GetTransactionByID(transactionId)
+	if err != nil {
+		return handler.SimpleBadRequest(err.Error())
+	}
+	if transaction.CreatedByID != user.ID {
+		return handler.SimpleBadRequest("Can not delete transaction created by other user")
+	}
+	dao.DeleteTransaction(*transaction)
+	return handler.Response200OK("Deleted transaction successfully")
 }

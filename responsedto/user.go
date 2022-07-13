@@ -10,6 +10,11 @@ type UserCreationResponse struct {
 	Email  string `json:"email,omitempty"`
 }
 
+type UserValidattionResponse struct {
+	SessionToken string `json:"sessionToken,omitempty"`
+	Expiry       int64  `json:"expiry,omitempty"`
+}
+
 func ConvertUserDtoToCreateResponseDto(user *dao.User) *UserCreationResponse {
 	return &UserCreationResponse{
 		UserID: user.ID,
@@ -24,11 +29,6 @@ func ConvertDaoUsersToConnectionsResponse(users []dao.User) []UserCreationRespon
 		resp = append(resp, *ConvertUserDtoToCreateResponseDto(&v))
 	}
 	return resp
-}
-
-type UserValidattionResponse struct {
-	SessionToken string `json:"sessionToken,omitempty"`
-	Expiry       int64  `json:"expiry,omitempty"`
 }
 
 func ConvertUserSessionDtoToUservalidationResponseDto(usersession *dao.UserSession) UserValidattionResponse {

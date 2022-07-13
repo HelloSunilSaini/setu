@@ -56,6 +56,10 @@ func AddGroupUsers(groupId, userId string) error {
 	return nil
 }
 
+func RemoveGroupUser(groupId, userId string) {
+	delete(GroupUsersMap, groupId+"_"+userId)
+}
+
 func IsGroupUser(groupId, userId string) bool {
 	_, ok := GroupUsersMap[groupId+"_"+userId]
 	if !ok {
@@ -78,14 +82,14 @@ func GetGroupUsers(groupId string) []User {
 }
 
 func GetUserGroups(userId string) []Group {
-	groupIds := []string{}
+	groupIds := map[string]bool{}
 	for _, groupUser := range GroupUsersMap {
 		if groupUser.UserID == userId {
-			groupIds = append(groupIds, groupUser.GroupID)
+			groupIds[groupUser.GroupID] = true
 		}
 	}
 	groups := []Group{}
-	for _, groupId := range groupIds {
+	for groupId, _ := range groupIds {
 		group, _ := GetGroupById(groupId)
 		groups = append(groups, *group)
 	}

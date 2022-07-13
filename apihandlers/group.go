@@ -47,6 +47,41 @@ func (u *GroupHandler) Post(r *http.Request) handler.ServiceResponse {
 
 }
 
+func (u *GroupHandler) Patch(r *http.Request) handler.ServiceResponse {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return handler.SimpleBadRequest("Error while reading the request")
+	}
+
+	var groupData *requestdto.GroupUsersRequest
+	err = json.Unmarshal(body, &groupData)
+	if err != nil {
+		return handler.ProcessError(err)
+	}
+	_, err = dao.GetGroupById(groupData.GroupID)
+	if err != nil {
+		return handler.SimpleBadRequest(err.Error())
+	}
+	for _, userId := range groupData.Users {
+		_, err = dao.GetUserByID(userId)
+		if err != nil {
+			return handler.SimpleBadRequest("Invalid UserIds Provided")
+		}
+	}
+	switch groupData.Action {
+	case "ADD":
+		for _, userId := range groupData.Users {
+			dao.AddGroupUsers(groupData.GroupID, userId)
+		}
+	case "REMOVE":
+		for _, userId := range groupData.Users {
+			dao.RemoveGroupUser(groupData.GroupID, userId)
+		}
+	}
+
+	return handler.Simple200OK("Operation Sussess")
+}
+
 // Get method for UserHandler
 func (u *GroupHandler) Get(r *http.Request) handler.ServiceResponse {
 
