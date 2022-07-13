@@ -34,9 +34,9 @@ func main() {
 	h.Handle("/setusplitwise/userconnection/", userConnectionHandler)
 	h.Handle("/setusplitwise/group/", groupHandler)
 	h.Handle("/setusplitwise/group/{groupId}/", groupHandler)
-	h.Handle("/setusplitwise/group/{groupId}/transactions/{transactionId}/", transactionHandler)
-	h.Handle("/setusplitwise/transactions/{transactionId}/", transactionHandler)
-	h.Handle("/setusplitwise/transactions/", transactionHandler)
+	h.Handle("/setusplitwise/group/{groupId}/transaction/{transactionId}/", transactionHandler)
+	h.Handle("/setusplitwise/transaction/{transactionId}/", transactionHandler)
+	h.Handle("/setusplitwise/transaction/", transactionHandler)
 	h.Handle("/setusplitwise/dashboard/", dashboardHandler)
 	h.Handle("/setusplitwise/settleup/", settleUpHandler)
 

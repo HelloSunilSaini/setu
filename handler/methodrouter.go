@@ -31,7 +31,7 @@ func RouteApiCall(sah ServiceApiHandler, r *http.Request, skipAuthenticationMeth
 			if err != nil {
 				return UnAuthorized("Invalid Session")
 			}
-			r = r.WithContext(context.WithValue(r.Context(), constants.USER_CONTEXT_KEY, user))
+			r = r.WithContext(context.WithValue(r.Context(), constants.USER_CONTEXT_KEY, *user))
 		}
 	}
 

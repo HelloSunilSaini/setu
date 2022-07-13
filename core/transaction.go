@@ -37,6 +37,10 @@ func UpdateTransaction(user dao.User, req requestdto.TransactionRequest) (bool, 
 }
 
 func getExtraAndLessMaps(req requestdto.TransactionRequest) (extraPayers, lessPayers map[string]float64, extraPayersUserIds, lessPayersUserIds []string, err error) {
+	extraPayers = map[string]float64{}
+	lessPayers = map[string]float64{}
+	extraPayersUserIds = []string{}
+	lessPayersUserIds = []string{}
 	var extrapaid, lesspaid, totalpaid, totalowes float64
 	for _, v := range req.SplitDetails {
 		_, err = dao.GetUserByID(v.UserID)

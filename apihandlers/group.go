@@ -9,6 +9,7 @@ import (
 	"setu/handler"
 	"setu/requestdto"
 	"setu/responsedto"
+	"setu/utils"
 
 	"github.com/gorilla/mux"
 )
@@ -84,9 +85,10 @@ func (u *GroupHandler) Patch(r *http.Request) handler.ServiceResponse {
 
 // Get method for UserHandler
 func (u *GroupHandler) Get(r *http.Request) handler.ServiceResponse {
-
+	logger := utils.Logger.Sugar()
 	user := r.Context().Value(constants.USER_CONTEXT_KEY).(dao.User)
 	vars := mux.Vars(r)
+	logger.Info(vars)
 	groupId, ok := vars["groupId"]
 	if !ok {
 		groups := dao.GetUserGroups(user.ID)
@@ -96,7 +98,9 @@ func (u *GroupHandler) Get(r *http.Request) handler.ServiceResponse {
 	if err != nil {
 		return handler.SimpleBadRequest(err.Error())
 	}
+	logger.Info(group)
 	groupUsers := dao.GetGroupUsers(groupId)
+	logger.Info(groupUsers)
 	users := responsedto.ConvertDaoUsersToConnectionsResponse(groupUsers)
 	resp := responsedto.SingleGroupResponse{
 		GroupDetails: *group,

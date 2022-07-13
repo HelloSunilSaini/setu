@@ -5,11 +5,11 @@ import (
 	"io/ioutil"
 	"net/http"
 	"setu/constants"
-	"setu/core"
 	"setu/dao"
 	"setu/handler"
 	"setu/requestdto"
 	"setu/responsedto"
+	"setu/utils"
 )
 
 type UserConnectionHandler struct {
@@ -46,7 +46,9 @@ func (u *UserConnectionHandler) Post(r *http.Request) handler.ServiceResponse {
 }
 
 func (u *UserConnectionHandler) Get(r *http.Request) handler.ServiceResponse {
+	logger := utils.Logger.Sugar()
 	user := r.Context().Value(constants.USER_CONTEXT_KEY).(dao.User)
-	userConnections := core.GetUserConnection(user.ID)
+	userConnections := dao.GetUserConnections(user.ID)
+	logger.Info(userConnections)
 	return handler.Response200OK(responsedto.ConvertDaoUsersToConnectionsResponse(userConnections))
 }

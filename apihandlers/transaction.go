@@ -92,7 +92,7 @@ func (u *TransactionHandler) Put(r *http.Request) handler.ServiceResponse {
 		return handler.PreconditionFailed(err.Error())
 	}
 
-	return handler.Response200OK("Transaction created successfully")
+	return handler.Response200OK("Transaction updated successfully")
 }
 
 // Get method for UserHandler

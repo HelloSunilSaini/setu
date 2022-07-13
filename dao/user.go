@@ -63,6 +63,7 @@ func (u *User) CreateUserSession(password string) (*UserSession, error) {
 		Expiry:    utils.GetMillisByTime(time.Now().Add(time.Hour * 24 * 15)), // 15 days expiry
 	}
 	u.LastLogIn = userSession.CreatedOn
+	UserSessions[userSession.ID] = userSession
 	u.UpdateUser()
 	return &userSession, nil
 }
@@ -102,10 +103,20 @@ func CreateUserConnection(user1Id, user2Id string) {
 		CreatedOn: utils.GetUTCTime(),
 	}
 	UserConnections[user1Id+"_"+user2Id] = uc
-	UserConnections[user2Id+"_"+user1Id] = uc
 	return
 }
 
-func GetUserConnections(userId string) []UserConnection {
-	return nil
+func GetUserConnections(userId string) []User {
+	userConnectionDetails := []User{}
+	for _, v := range UserConnections {
+		if v.UserID1 != userId {
+			user, _ := GetUserByID(v.UserID1)
+			userConnectionDetails = append(userConnectionDetails, *user)
+		}
+		if v.UserID2 != userId {
+			user, _ := GetUserByID(v.UserID2)
+			userConnectionDetails = append(userConnectionDetails, *user)
+		}
+	}
+	return userConnectionDetails
 }

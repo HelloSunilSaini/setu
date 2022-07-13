@@ -5,9 +5,6 @@ import (
 	"setu/handler"
 )
 
-func init() {
-}
-
 type BaseHandler struct {
 }
 

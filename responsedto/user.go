@@ -16,6 +16,9 @@ type UserValidattionResponse struct {
 }
 
 func ConvertUserDtoToCreateResponseDto(user *dao.User) *UserCreationResponse {
+	if user == nil {
+		return &UserCreationResponse{}
+	}
 	return &UserCreationResponse{
 		UserID: user.ID,
 		Name:   user.Name,

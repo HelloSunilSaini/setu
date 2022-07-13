@@ -69,11 +69,13 @@ func IsGroupUser(groupId, userId string) bool {
 }
 
 func GetGroupUsers(groupId string) []User {
+	logger := utils.Logger.Sugar()
 	groupUsers := []User{}
 	for _, groupuser := range GroupUsersMap {
 		if groupuser.GroupID == groupId {
 			user, err := GetUserByID(groupuser.UserID)
-			if err != nil {
+			logger.Info(user)
+			if err == nil {
 				groupUsers = append(groupUsers, *user)
 			}
 		}

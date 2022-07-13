@@ -1,9 +1,12 @@
 #!/bin/bash
 build:
-	go build -o splitwise
+	go build -o setusplitwise
 
-# docker_build:
+test:
+	go test ./...
 
-# docker_run:
+docker_build:
+	docker build .
 
-# docker_compose_run:
+run:
+	docker compose up --build
